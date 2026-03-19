@@ -1,0 +1,5 @@
+devpaste
+devpaste.db
+*.db-shm
+*.db-wal
+.env

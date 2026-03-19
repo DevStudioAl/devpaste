@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevPaste — Secure Encrypted Sharing by DevStudioAl</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: fixed;
+      inset: 0;
+      background: url('/hero-bg.jpg') center center / cover no-repeat;
+      z-index: 0;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        110deg,
+        rgba(4, 6, 18, 0.90) 0%,
+        rgba(4, 6, 18, 0.72) 45%,
+        rgba(4, 6, 18, 0.30) 100%
+      );
+    }
+
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .nav-logo-lock {
+      width: 28px;
+      height: 28px;
+      background: #5c6ef8;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .nav-logo-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.4px;
+    }
+
+    .nav-logo-name span { color: #818cf8; }
+
+    .nav-logo-sep {
+      width: 1px;
+      height: 16px;
+      background: rgba(255,255,255,0.2);
+      margin: 0 8px;
+    }
+
+    .nav-logo-brand {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 400;
+      letter-spacing: 0.2px;
+    }
+
+    .hero-wrap {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      height: calc(100vh - 76px);
+      padding: 0 164px;
+    }
+
+    .hero-card {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(92, 110, 248, 0.15);
+      border: 1px solid rgba(92, 110, 248, 0.35);
+      border-radius: 100px;
+      padding: 5px 12px 5px 8px;
+      margin-bottom: 24px;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #818cf8;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero-badge span {
+      font-size: 12px;
+      font-weight: 500;
+      color: #a5b4fc;
+      letter-spacing: 0.2px;
+    }
+
+    .hero-card h1 {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+
+    .hero-card h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-card p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.60);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 400px;
+    }
+
+    .hero-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+
+    .hero-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-feature-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .fi-blue  { background: rgba(99, 102, 241, 0.18); }
+    .fi-green { background: rgba(34, 197, 94, 0.15); }
+    .fi-amber { background: rgba(251, 191, 36, 0.15); }
+
+    .hero-feature-text {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.72);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .hero-feature-text strong {
+      color: rgba(255,255,255,0.92);
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #5c6ef8;
+      color: #fff;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 26px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: -0.2px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-cta:hover {
+      background: #4a5ce6;
+    }
+
+    .btn-cta:active { transform: scale(0.98); }
+
+    .btn-cta svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.15s;
+    }
+
+    .btn-cta:hover svg { transform: translateX(3px); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.50);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .btn-ghost:hover { color: rgba(255,255,255,0.85); }
+
+    .btn-ghost svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.6;
+    }
+
+    .hero-footer {
+      position: absolute;
+      bottom: 22px;
+      left: 164px;
+      z-index: 10;
+      font-size: 12px;
+      color: rgba(255,255,255,0.28);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-footer span { display: flex; align-items: center; gap: 6px; }
+
+    /* ── DRAWER ──────────────────────────────────────── */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .drawer-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      background: #0e1020;
+      border-left: 1px solid rgba(255,255,255,0.08);
+      z-index: 101;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-inner {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+
+    .drawer-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .drawer-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(92, 110, 248, 0.15);
+      border: 1px solid rgba(92, 110, 248, 0.25);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .drawer-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+      margin-bottom: 2px;
+    }
+
+    .drawer-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.38);
+    }
+
+    .drawer-close {
+      width: 34px;
+      height: 34px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.55);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .drawer-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .drawer-close svg { width: 15px; height: 15px; }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 28px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.12) transparent;
+    }
+
+    .drawer-section {}
+
+    .drawer-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 14px;
+    }
+
+    .drawer-text {
+      font-size: 14px;
+      color: rgba(255,255,255,0.60);
+      line-height: 1.75;
+    }
+
+    .drawer-text em {
+      font-style: normal;
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+    }
+
+    .drawer-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .drawer-step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .drawer-step:last-child { border-bottom: none; }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      background: rgba(92, 110, 248, 0.18);
+      border: 1px solid rgba(92, 110, 248, 0.30);
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #818cf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-body {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .step-body strong {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-body span {
+      font-size: 13px;
+      color: rgba(255,255,255,0.48);
+      line-height: 1.6;
+    }
+
+    .step-opt {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.30);
+    }
+
+    .drawer-callout {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: rgba(92, 110, 248, 0.08);
+      border: 1px solid rgba(92, 110, 248, 0.20);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+
+    .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+    .callout-text {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .callout-text strong {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .callout-text span {
+      font-size: 13px;
+      color: rgba(255,255,255,0.48);
+      line-height: 1.65;
+    }
+
+    .callout-text code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: rgba(255,255,255,0.08);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #a5b4fc;
+    }
+
+    .drawer-example-list {
+      margin: 10px 0 0 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
+    }
+
+    .drawer-example-list strong {
+      color: rgba(255,255,255,0.82);
+      font-weight: 600;
+    }
+
+    .drawer-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #5c6ef8 0%, #7c3aed 100%);
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 12px;
+      transition: opacity 0.15s;
+      letter-spacing: -0.2px;
+      flex-shrink: 0;
+    }
+
+    .drawer-cta:hover { opacity: 0.88; }
+    .drawer-cta svg { width: 15px; height: 15px; }
+
+    /* ── BTN-GHOST as button ─────────────────────────── */
+    .btn-ghost {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      /* Lock to stable viewport — 100svh doesn't change when address bar hides */
+      html { overflow: hidden; height: 100%; }
+      body { overflow: hidden; position: relative; height: 100svh; }
+
+      /* Absolute (not fixed) so it anchors to stable body size, not drifting viewport */
+      .hero-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Uniform dark overlay on mobile */
+      .hero-bg::after {
+        background: rgba(4, 6, 18, 0.78);
+      }
+
+      nav { padding: 16px 20px; }
+
+      .hero-wrap {
+        padding: 0 20px 80px;
+        height: calc(100% - 64px);
+        align-items: center;
+      }
+
+      .hero-card { max-width: 100%; }
+
+      .hero-card h1 {
+        font-size: 34px;
+        letter-spacing: -1px;
+      }
+
+      .hero-card p {
+        font-size: 14.5px;
+        margin-bottom: 28px;
+        max-width: 100%;
+      }
+
+      .hero-features { margin-bottom: 28px; }
+
+      .btn-cta {
+        width: 100%;
+        justify-content: center;
+        font-size: 15px;
+        padding: 15px 20px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .btn-ghost { justify-content: center; }
+
+      /* Pin footer to bottom — keeps it off the flow so body stays un-scrollable */
+      .hero-footer {
+        position: fixed;
+        bottom: 14px;
+        left: 0;
+        right: 0;
+        justify-content: center;
+        padding: 0 20px;
+      }
+
+      .drawer { max-width: 100%; }
+      .drawer-body { padding: 20px 20px 36px; }
+      .drawer-head { padding: 18px 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-card h1 { font-size: 28px; }
+      .hero-badge span { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-bg"></div>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-lock">🔒</div>
+      <span class="nav-logo-name">Dev<span>Paste</span></span>
+      <div class="nav-logo-sep"></div>
+      <span class="nav-logo-brand">DevStudioAl</span>
+    </a>
+  </nav>
+
+  <div class="hero-wrap">
+    <div class="hero-card">
+
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        <span>AES-256-GCM · Zero-knowledge · End-to-end encrypted</span>
+      </div>
+
+      <h1>Share secrets<br/>with <em>total</em> privacy.</h1>
+
+      <p>Paste passwords, API keys, or any sensitive data. It encrypts in your browser before it ever leaves your device — we literally cannot read it.</p>
+
+      <div class="hero-features">
+        <div class="hero-feature">
+          <div class="hero-feature-icon fi-blue">🔐</div>
+          <span class="hero-feature-text"><strong>Browser-side encryption.</strong> The key stays in your URL fragment — never sent to the server.</span>
+        </div>
+        <div class="hero-feature">
+          <div class="hero-feature-icon fi-amber">⏱️</div>
+          <span class="hero-feature-text"><strong>Self-destructs.</strong> Set an expiry from 5 minutes to 30 days, or burn after first read.</span>
+        </div>
+        <div class="hero-feature">
+          <div class="hero-feature-icon fi-green">🛡️</div>
+          <span class="hero-feature-text"><strong>Optional password lock.</strong> Add a second layer — only the right person can unlock it.</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="/new" class="btn-cta">
+          Create a secure message
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <button class="btn-ghost" id="howBtn">
+          How it works
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── HOW IT WORKS DRAWER ─────────────────────── -->
+  <div id="drawerBackdrop" class="drawer-backdrop"></div>
+
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-inner">
+
+      <div class="drawer-head">
+        <div class="drawer-title-wrap">
+          <div class="drawer-icon">📖</div>
+          <div>
+            <h2 class="drawer-title">How DevPaste works</h2>
+            <p class="drawer-sub">End-to-end encryption explained simply</p>
+          </div>
+        </div>
+        <button class="drawer-close" id="drawerClose" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+
+        <div class="drawer-section">
+          <h3 class="drawer-section-title">What is DevPaste?</h3>
+          <p class="drawer-text">DevPaste is a zero-knowledge encrypted sharing tool. It lets you safely send passwords, API keys, credentials, or any sensitive text — temporarily and securely. Unlike email or chat, your data is encrypted <em>in your browser</em> before it ever reaches our servers. We literally cannot read what you share.</p>
+        </div>
+
+        <div class="drawer-section">
+          <h3 class="drawer-section-title">Step by step</h3>
+          <div class="drawer-steps">
+
+            <div class="drawer-step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <strong>Write your message</strong>
+                <span>Paste your password, API key, or any sensitive text into the content field.</span>
+              </div>
+            </div>
+
+            <div class="drawer-step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <strong>Set an expiry</strong>
+                <span>Choose how long the link should live — from 5 minutes up to 30 days. After that, the content is permanently deleted.</span>
+              </div>
+            </div>
+
+            <div class="drawer-step">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <strong>Enable burn after read <span class="step-opt">(optional)</span></strong>
+                <span>The message self-destructs the moment someone opens it — it can never be viewed again.</span>
+              </div>
+            </div>
+
+            <div class="drawer-step">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                <strong>Add a password lock <span class="step-opt">(optional)</span></strong>
+                <span>Add an extra layer of protection. Share the password separately — over a call, SMS, or in person.</span>
+              </div>
+            </div>
+
+            <div class="drawer-step">
+              <div class="step-num">5</div>
+              <div class="step-body">
+                <strong>Generate your link</strong>
+                <span>DevPaste encrypts your content with AES-256-GCM directly in your browser, then creates a unique link.</span>
+              </div>
+            </div>
+
+            <div class="drawer-step">
+              <div class="step-num">6</div>
+              <div class="step-body">
+                <strong>Send the link</strong>
+                <span>Share it via any channel — email, Slack, SMS. The decryption key is in the <code>#fragment</code> of the URL and is never sent to our server.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="drawer-callout">
+          <div class="callout-icon">🔐</div>
+          <div class="callout-text">
+            <strong>Why is it safe?</strong>
+            <span>The encryption key lives only in the URL fragment (the part after <code>#</code>). Browsers never send fragments to servers — so DevPaste's server only ever stores ciphertext it cannot decrypt.</span>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <h3 class="drawer-section-title">Example</h3>
+          <p class="drawer-text">You need to send a database password to a teammate:</p>
+          <ol class="drawer-example-list">
+            <li>Open <strong>DevPaste</strong> and paste the password</li>
+            <li>Select <strong>1 hour</strong> expiry</li>
+            <li>Enable <strong>burn after read</strong></li>
+            <li>Click <strong>Generate encrypted link</strong></li>
+            <li>Send the link to your teammate via Slack</li>
+            <li>They open it once — it decrypts instantly — then it's gone forever</li>
+          </ol>
+          <p class="drawer-text" style="margin-top:12px;">Your server never stored the plaintext. DevPaste never could read it. The teammate is the only person who saw it.</p>
+        </div>
+
+        <a href="/new" class="drawer-cta">
+          Create a secure message
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+
+      </div>
+    </div>
+  </aside>
+
+  <footer class="hero-footer">
+    <span>© 2026 DevPaste</span>
+    <span>·</span>
+    <span>Powered by <a href="https://devstudioal.com" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">DevStudioAl</a></span>
+  </footer>
+
+  <script>
+    const drawer   = document.getElementById('drawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    const howBtn   = document.getElementById('howBtn');
+    const closeBtn = document.getElementById('drawerClose');
+
+    function openDrawer() {
+      drawer.classList.add('open');
+      backdrop.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      backdrop.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    howBtn.addEventListener('click', openDrawer);
+    closeBtn.addEventListener('click', closeDrawer);
+    backdrop.addEventListener('click', closeDrawer);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDrawer();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevPaste — View Secure Message</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <a href="/" class="logo">
+        <span class="logo-icon">🔒</span>
+        <span class="logo-text">Dev<strong>Paste</strong></span>
+      </a>
+      <span class="logo-sub">by DevStudioAl</span>
+    </header>
+
+    <main class="main-card" id="mainCard">
+
+      <div id="loadingState" class="state-block">
+        <div class="spinner-lg"></div>
+        <p>Retrieving secure message…</p>
+      </div>
+
+      <div id="passwordState" class="state-block hidden">
+        <div class="state-icon">🔑</div>
+        <h2>Password required</h2>
+        <p>This message is password protected. Enter the password to decrypt it.</p>
+        <div class="field">
+          <div class="password-wrap">
+            <input type="password" id="passwordInput" placeholder="Enter password…" />
+            <button type="button" class="eye-btn" id="togglePasswordView" aria-label="Show password">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <p id="passwordError" class="error-text hidden">Incorrect password. Try again.</p>
+        <button class="btn-primary" id="unlockBtn">Unlock</button>
+      </div>
+
+      <div id="contentState" class="state-block hidden">
+        <div class="burn-warning hidden" id="burnWarning">
+          <span>🔥</span> This message has been permanently destroyed after this view.
+        </div>
+        <div class="content-header">
+          <h2>Secure message</h2>
+          <div class="content-actions">
+            <button class="btn-icon" id="copyContentBtn" title="Copy content">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+        <pre id="decryptedContent" class="content-box"></pre>
+        <div class="meta-row" id="metaRow"></div>
+        <a href="/new" class="btn-secondary create-new">Create a new secure message</a>
+      </div>
+
+      <div id="errorState" class="state-block hidden">
+        <div class="state-icon">❌</div>
+        <h2 id="errorTitle">Message not found</h2>
+        <p id="errorMsg">This message has expired or does not exist.</p>
+        <a href="/new" class="btn-primary">Create a new message</a>
+      </div>
+
+    </main>
+
+  </div>
+
+  <footer class="hero-footer">
+    <span>© 2026 DevPaste</span>
+    <span class="dot">·</span>
+    <span>Powered by <a href="https://devstudioal.com" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">DevStudioAl</a></span>
+  </footer>
+
+  <script>
+    function base64UrlDecode(str) {
+      str = str.replace(/-/g, '+').replace(/_/g, '/');
+      while (str.length % 4) str += '=';
+      const bin = atob(str);
+      return Uint8Array.from(bin, c => c.charCodeAt(0));
+    }
+
+    async function importKey(keyBytes) {
+      return crypto.subtle.importKey('raw', keyBytes, { name: 'AES-GCM' }, false, ['decrypt']);
+    }
+
+    async function decryptContent(ciphertextB64, ivB64, key) {
+      const iv = base64UrlDecode(ivB64);
+      const ciphertext = base64UrlDecode(ciphertextB64);
+      const plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+      return new TextDecoder().decode(plaintext);
+    }
+
+    function showState(name) {
+      ['loadingState', 'passwordState', 'contentState', 'errorState'].forEach(id => {
+        document.getElementById(id).classList.toggle('hidden', id !== name);
+      });
+    }
+
+    function showError(title, msg) {
+      document.getElementById('errorTitle').textContent = title;
+      document.getElementById('errorMsg').textContent = msg;
+      showState('errorState');
+    }
+
+    const pathParts = window.location.pathname.split('/');
+    const pasteId = pathParts[pathParts.length - 1];
+    const keyFragment = window.location.hash.slice(1);
+
+    if (!pasteId || !keyFragment) {
+      showError('Invalid link', 'This link is missing the decryption key. Make sure you copied the full URL including the # part.');
+    } else {
+      loadPaste();
+    }
+
+    let cryptoKey = null;
+    let pasteData = null;
+
+    async function loadPaste() {
+      showState('loadingState');
+      try {
+        const keyBytes = base64UrlDecode(keyFragment);
+        cryptoKey = await importKey(keyBytes);
+      } catch (e) {
+        showError('Invalid key', 'The decryption key in the link is malformed.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/paste/${pasteId}`);
+        if (res.status === 404 || res.status === 410) {
+          const body = await res.json().catch(() => ({}));
+          if (body.error === 'paste has already been read') {
+            showError('Already read', 'This message was set to self-destruct after first read. It no longer exists.');
+          } else if (body.error === 'paste has expired') {
+            showError('Expired', 'This message has expired and been permanently deleted.');
+          } else {
+            showError('Not found', 'This message does not exist or has already been deleted.');
+          }
+          return;
+        }
+        if (!res.ok) throw new Error('Server error');
+
+        pasteData = await res.json();
+
+        if (pasteData.has_password) {
+          showState('passwordState');
+          return;
+        }
+
+        await displayDecrypted(pasteData);
+      } catch (e) {
+        showError('Error', 'Failed to retrieve the message. Please check your connection and try again.');
+      }
+    }
+
+    async function displayDecrypted(data) {
+      try {
+        const plaintext = await decryptContent(data.encrypted_content, data.iv, cryptoKey);
+        document.getElementById('decryptedContent').textContent = plaintext;
+
+        if (data.burn_after_read) {
+          document.getElementById('burnWarning').classList.remove('hidden');
+        }
+
+        const meta = [];
+        if (data.expires_at) {
+          const d = new Date(data.expires_at * 1000);
+          meta.push(`Originally set to expire: ${d.toLocaleString()}`);
+        }
+        document.getElementById('metaRow').textContent = meta.join(' · ');
+
+        showState('contentState');
+      } catch (e) {
+        showError('Decryption failed', 'The key in this link does not match the content. The message may be corrupted or the link may be incomplete.');
+      }
+    }
+
+    document.getElementById('togglePasswordView').addEventListener('click', () => {
+      const inp = document.getElementById('passwordInput');
+      inp.type = inp.type === 'text' ? 'password' : 'text';
+    });
+
+    document.getElementById('unlockBtn').addEventListener('click', async () => {
+      const password = document.getElementById('passwordInput').value;
+      if (!password) return;
+
+      document.getElementById('unlockBtn').disabled = true;
+      document.getElementById('passwordError').classList.add('hidden');
+
+      try {
+        const res = await fetch(`/api/paste/${pasteId}/unlock`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+
+        if (res.status === 401) {
+          document.getElementById('passwordError').classList.remove('hidden');
+          document.getElementById('unlockBtn').disabled = false;
+          return;
+        }
+
+        if (res.status === 410) {
+          showError('Already read or expired', 'This message has been deleted.');
+          return;
+        }
+
+        if (!res.ok) throw new Error('Server error');
+
+        pasteData = await res.json();
+        await displayDecrypted(pasteData);
+      } catch (e) {
+        showError('Error', 'Failed to unlock the message.');
+      } finally {
+        document.getElementById('unlockBtn').disabled = false;
+      }
+    });
+
+    document.getElementById('passwordInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('unlockBtn').click();
+    });
+
+    document.getElementById('copyContentBtn').addEventListener('click', () => {
+      const text = document.getElementById('decryptedContent').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyContentBtn');
+        btn.classList.add('copied');
+        setTimeout(() => btn.classList.remove('copied'), 2000);
+      });
+    });
+  </script>
+</body>
+</html>
