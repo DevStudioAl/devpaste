@@ -1,6 +1,6 @@
 # 🔒 DevPaste
 
-**End-to-end encrypted, zero-knowledge secret sharing** — built by [DevStudioAl](https://devstudioal.com).
+**End-to-end encrypted, zero-knowledge secret sharing** — built by <a href="https://devstudioal.com" target="_blank">DevStudioAl</a>.
 
 Share passwords, API keys, tokens, or any sensitive data. Your content is encrypted in the browser before it ever leaves your device. The server never sees the plaintext — not even for a millisecond.
 
@@ -132,4 +132,4 @@ MIT — see [LICENSE](LICENSE)
 
 ---
 
-Built with care by [DevStudioAl](https://devstudioal.com)
+Built with care by <a href="https://devstudioal.com" target="_blank">DevStudioAl</a>
