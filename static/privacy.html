@@ -1,0 +1,235 @@
+<!--
+  This Privacy Policy is specific to DevPaste hosted by DevStudioAl (devstudioal.com).
+  If you are self-hosting this project, replace all references to DevStudioAl,
+  devstudioal.com, and privacy@devstudioal.com with your own details.
+  This file is provided as a real-world example — it is NOT a generic legal template.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — DevPaste</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="/" class="nav-logo">
+    <span class="nav-logo-name">Dev<span>Paste</span></span>
+    <div class="nav-logo-sep"></div>
+    <span class="nav-logo-brand">DevStudioAl</span>
+  </a>
+  <a href="/" class="nav-back">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to home
+  </a>
+</nav>
+
+<div class="legal-wrap">
+
+  <div class="doc-header">
+    <div class="doc-badge">🔏 Legal</div>
+    <h1>Privacy Policy</h1>
+    <p class="doc-meta">Last updated: March 2026 · Effective immediately · Applies to all users of DevPaste</p>
+  </div>
+
+  <div class="callout">
+    <span class="callout-icon">✅</span>
+    <p><strong>Short version:</strong> We store only encrypted data we cannot read. We do not track you, profile you, sell your data, or use cookies. The encryption key never reaches our server. This policy exists to be transparent about the very little data we do handle.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">1</span> Who We Are</h2>
+    <p>DevPaste is a zero-knowledge encrypted secret-sharing service operated by <strong>DevStudioAl</strong> (<a href="https://devstudioal.com" target="_blank">devstudioal.com</a>). When this policy says "we", "us", or "our", it refers to DevStudioAl.</p>
+    <p>If you have any questions about this policy, contact us at: <strong>privacy@devstudioal.com</strong></p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">2</span> The Zero-Knowledge Architecture</h2>
+    <p>Understanding how DevPaste works is essential to understanding this privacy policy:</p>
+    <ul>
+      <li>When you create a paste, your browser generates a random AES-256-GCM encryption key locally.</li>
+      <li>Your content is encrypted <strong>in your browser</strong> before it is sent to our server.</li>
+      <li>Only the ciphertext (encrypted, unreadable data) is transmitted to and stored on our server.</li>
+      <li>The decryption key is placed in the <strong>#fragment</strong> of the share URL. Browsers never send the #fragment to the server — this is defined by the HTTP specification.</li>
+      <li>We <strong>cannot</strong> decrypt, read, or access the content of any paste. Not now, not ever.</li>
+    </ul>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">3</span> What Data We Store</h2>
+    <p>The following table describes every field stored in our database for each paste:</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>What it is</th>
+          <th>Readable by us?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>id</code></td>
+          <td>A random 32-character alphanumeric identifier</td>
+          <td><span class="tag-yes">Yes</span> — but meaningless alone</td>
+        </tr>
+        <tr>
+          <td><code>encrypted_content</code></td>
+          <td>AES-256-GCM ciphertext of your content</td>
+          <td><span class="tag-no">No</span> — unreadable without the key</td>
+        </tr>
+        <tr>
+          <td><code>iv</code></td>
+          <td>Cryptographic initialization vector (not secret)</td>
+          <td><span class="tag-yes">Yes</span> — but useless without the key</td>
+        </tr>
+        <tr>
+          <td><code>password_hash</code></td>
+          <td>bcrypt hash of your optional password (if set)</td>
+          <td><span class="tag-no">No</span> — one-way hash, cannot be reversed</td>
+        </tr>
+        <tr>
+          <td><code>expires_at</code></td>
+          <td>Unix timestamp when the paste will be deleted</td>
+          <td><span class="tag-yes">Yes</span></td>
+        </tr>
+        <tr>
+          <td><code>burn_after_read</code></td>
+          <td>Flag: whether to delete on first view</td>
+          <td><span class="tag-yes">Yes</span></td>
+        </tr>
+        <tr>
+          <td><code>created_at</code></td>
+          <td>Unix timestamp of paste creation</td>
+          <td><span class="tag-yes">Yes</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p>We do <strong>not</strong> store: your IP address in the database, your name, email, browser, device, location, or any identifier linked to you personally.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">4</span> IP Addresses and Rate Limiting</h2>
+    <p>To prevent brute-force attacks on password-protected pastes, we apply rate limiting. This requires temporarily holding your IP address in server memory.</p>
+    <div class="highlight-box">
+      <p><strong>Important:</strong> IP addresses used for rate limiting are held <strong>in memory only</strong> — they are never written to the database, never logged to disk, and are automatically cleared after 10 minutes or upon a successful unlock. They are not used for any other purpose.</p>
+    </div>
+    <p>Server access logs (if any) generated by the hosting infrastructure may capture IP addresses at the network level. These are outside our direct control and are subject to the hosting provider's own retention and privacy policies.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">5</span> Cookies and Tracking</h2>
+    <ul>
+      <li>We do <strong>not</strong> use cookies of any kind.</li>
+      <li>We do <strong>not</strong> use analytics, tracking pixels, or fingerprinting.</li>
+      <li>We do <strong>not</strong> use advertising networks.</li>
+      <li>We do <strong>not</strong> track you across sessions or devices.</li>
+      <li>We have no way to identify returning users.</li>
+    </ul>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">6</span> Third-Party Services</h2>
+    <p>DevPaste loads fonts from Google Fonts (fonts.googleapis.com and fonts.gstatic.com). When your browser loads a font, Google may receive your IP address and browser information as part of the request. This is governed by <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</p>
+    <p>No other third-party services, scripts, CDNs, or external resources are loaded by DevPaste. There are no social media buttons, no embedded iframes from third parties, and no external JavaScript.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">7</span> Data Retention and Deletion</h2>
+    <p>All pastes are automatically and permanently deleted based on your chosen expiry setting:</p>
+    <ul>
+      <li><strong>5 minutes</strong> — deleted 5 minutes after creation</li>
+      <li><strong>1 hour</strong> — deleted 1 hour after creation</li>
+      <li><strong>1 day</strong> — deleted 24 hours after creation</li>
+      <li><strong>7 days</strong> — deleted 7 days after creation</li>
+      <li><strong>30 days</strong> — deleted 30 days after creation (maximum)</li>
+    </ul>
+    <p>If <strong>Burn After Read</strong> is enabled, the paste is deleted immediately after it is viewed for the first time — regardless of the expiry setting.</p>
+    <p>Deletion is permanent. There is no archive, no backup of paste content, and no way to recover a deleted paste.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">8</span> Security Measures</h2>
+    <p>The following technical security controls are in place:</p>
+    <ul>
+      <li><strong>AES-256-GCM encryption</strong> — military-grade authenticated encryption performed entirely in your browser</li>
+      <li><strong>bcrypt password hashing</strong> — passwords are never stored in plaintext; only a one-way hash is kept</li>
+      <li><strong>Content Security Policy</strong> — prevents scripts from sending data to external servers</li>
+      <li><strong>Referrer-Policy: no-referrer</strong> — the decryption key in the URL fragment cannot leak via HTTP referrer headers</li>
+      <li><strong>X-Frame-Options: DENY</strong> — prevents clickjacking attacks</li>
+      <li><strong>Brute-force protection</strong> — password unlock is rate-limited to 10 attempts per 10 minutes per IP</li>
+      <li><strong>Payload size limits</strong> — requests are capped to prevent denial-of-service attacks</li>
+    </ul>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">9</span> Your Rights Under GDPR</h2>
+    <p>If you are located in the European Economic Area (EEA), you have the following rights under the General Data Protection Regulation (GDPR):</p>
+    <ul>
+      <li><strong>Right of access</strong> — the right to request what personal data we hold about you</li>
+      <li><strong>Right to erasure</strong> — the right to request deletion of your data</li>
+      <li><strong>Right to restriction</strong> — the right to request that we restrict processing</li>
+      <li><strong>Right to object</strong> — the right to object to processing</li>
+      <li><strong>Right to data portability</strong> — the right to receive your data in a machine-readable format</li>
+    </ul>
+    <div class="highlight-box">
+      <p>In practice, because DevPaste stores no personal identifiers, we have no technical way to link stored data to a specific individual. A paste ID alone is not sufficient to establish identity. We cannot connect an IP address (which we do not store) to a paste.</p>
+    </div>
+    <p>To exercise any of these rights, contact us at <strong>privacy@devstudioal.com</strong>.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">10</span> Children's Privacy</h2>
+    <p>DevPaste is not directed at children under the age of 16. We do not knowingly collect any data from children under 16. If you believe a child under 16 has used this service, please contact us and we will take appropriate action.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">11</span> Open Source</h2>
+    <p>DevPaste is fully open source. The complete source code is publicly available at <a href="https://github.com/DevStudioAl/devpaste" target="_blank">github.com/DevStudioAl/devpaste</a>. Anyone can audit the code to verify the privacy claims made in this document are technically accurate and that no hidden data collection exists.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">12</span> Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Changes will be reflected by an updated "Last updated" date at the top of this page. Continued use of DevPaste after a change constitutes acceptance of the updated policy.</p>
+    <p>We will not make changes that reduce your privacy rights without clearly communicating those changes.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2><span class="section-num">13</span> Contact</h2>
+    <p>For any privacy-related questions, requests, or concerns:</p>
+    <ul>
+      <li>Email: <strong>privacy@devstudioal.com</strong></li>
+      <li>Website: <a href="https://devstudioal.com" target="_blank">devstudioal.com</a></li>
+    </ul>
+  </div>
+
+  <div class="legal-divider"></div>
+
+  <p class="legal-footer-note">
+    DevPaste is operated by DevStudioAl &nbsp;·&nbsp;
+    <a href="/terms">Terms of Service</a> &nbsp;·&nbsp;
+    <a href="/">Back to app</a>
+  </p>
+
+</div>
+
+<footer class="hero-footer">
+  <div class="footer-row1">
+    <span>© 2026 DevPaste</span>
+    <span>·</span>
+    <span>Powered by <a href="https://devstudioal.com" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">DevStudioAl</a></span>
+  </div>
+  <div class="footer-row2">
+    <span><a href="https://github.com/DevStudioAl/devpaste" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Open Source</a></span>
+    <span>·</span>
+    <span><a href="/privacy" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Privacy</a></span>
+    <span>·</span>
+    <span><a href="/terms" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Terms</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

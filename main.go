@@ -70,6 +70,8 @@ func main() {
         mux.HandleFunc("/", serveHomePage)
         mux.HandleFunc("/new", serveNewPage)
         mux.HandleFunc("/view/", serveViewPage)
+        mux.HandleFunc("/privacy", servePrivacyPage)
+        mux.HandleFunc("/terms", serveTermsPage)
         mux.Handle("/style.css", fs)
         mux.Handle("/hero-bg.jpg", fs)
         mux.HandleFunc("/api/paste", handlePaste)
@@ -167,6 +169,14 @@ func serveNewPage(w http.ResponseWriter, r *http.Request) {
 
 func serveViewPage(w http.ResponseWriter, r *http.Request) {
         http.ServeFile(w, r, "./static/view.html")
+}
+
+func servePrivacyPage(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "./static/privacy.html")
+}
+
+func serveTermsPage(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "./static/terms.html")
 }
 
 type CreatePasteRequest struct {

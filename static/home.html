@@ -50,17 +50,6 @@
       text-decoration: none;
     }
 
-    .nav-logo-lock {
-      width: 28px;
-      height: 28px;
-      background: #5c6ef8;
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
-
     .nav-logo-name {
       font-size: 17px;
       font-weight: 700;
@@ -168,19 +157,19 @@
     }
 
     .hero-feature-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
       flex-shrink: 0;
     }
 
-    .fi-blue  { background: rgba(99, 102, 241, 0.18); }
-    .fi-green { background: rgba(34, 197, 94, 0.15); }
-    .fi-amber { background: rgba(251, 191, 36, 0.15); }
+    .fi-blue, .fi-green, .fi-amber {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
 
     .hero-feature-text {
       font-size: 13.5px;
@@ -254,13 +243,20 @@
     .hero-footer {
       position: absolute;
       bottom: 22px;
-      left: 164px;
+      left: 32px;
+      right: 32px;
       z-index: 10;
       font-size: 12px;
       color: rgba(255,255,255,0.28);
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .footer-row1, .footer-row2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .hero-footer span { display: flex; align-items: center; gap: 6px; }
@@ -598,14 +594,23 @@
 
       .btn-ghost { justify-content: center; }
 
-      /* Pin footer to bottom — keeps it off the flow so body stays un-scrollable */
+      /* Footer anchored to bottom of page — not fixed to viewport */
       .hero-footer {
-        position: fixed;
-        bottom: 14px;
+        position: absolute;
+        bottom: 0;
         left: 0;
         right: 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 10px 20px 12px;
+        border-top: 1px solid rgba(255,255,255,0.07);
+      }
+
+      .footer-row1, .footer-row2 {
         justify-content: center;
-        padding: 0 20px;
+        flex-wrap: wrap;
+        gap: 8px;
       }
 
       .drawer { max-width: 100%; }
@@ -625,7 +630,6 @@
 
   <nav>
     <a href="/" class="nav-logo">
-      <div class="nav-logo-lock">🔒</div>
       <span class="nav-logo-name">Dev<span>Paste</span></span>
       <div class="nav-logo-sep"></div>
       <span class="nav-logo-brand">DevStudioAl</span>
@@ -646,15 +650,34 @@
 
       <div class="hero-features">
         <div class="hero-feature">
-          <div class="hero-feature-icon fi-blue">🔐</div>
+          <div class="hero-feature-icon fi-blue">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2.25" y="7" width="10.5" height="7.25" rx="2" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.65)" stroke-width="1.15"/>
+              <path d="M5 7V4.75C5 3.231 6.119 2 7.5 2C8.881 2 10 3.231 10 4.75V7" stroke="rgba(255,255,255,0.65)" stroke-width="1.3" stroke-linecap="round"/>
+              <circle cx="7.5" cy="10.6" r="1.05" fill="rgba(255,255,255,0.65)"/>
+              <line x1="7.5" y1="10.6" x2="7.5" y2="12.4" stroke="rgba(255,255,255,0.65)" stroke-width="1.1" stroke-linecap="round"/>
+            </svg>
+          </div>
           <span class="hero-feature-text"><strong>Browser-side encryption.</strong> The key stays in your URL fragment — never sent to the server.</span>
         </div>
         <div class="hero-feature">
-          <div class="hero-feature-icon fi-amber">⏱️</div>
+          <div class="hero-feature-icon fi-amber">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="7.5" cy="8.5" r="5.25" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.65)" stroke-width="1.15"/>
+              <path d="M7.5 5.5V8.75L9.5 10.25" stroke="rgba(255,255,255,0.65)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5.5 1.5H9.5" stroke="rgba(255,255,255,0.65)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M7.5 1.5V3.25" stroke="rgba(255,255,255,0.65)" stroke-width="1.15" stroke-linecap="round"/>
+            </svg>
+          </div>
           <span class="hero-feature-text"><strong>Self-destructs.</strong> Set an expiry from 5 minutes to 30 days, or burn after first read.</span>
         </div>
         <div class="hero-feature">
-          <div class="hero-feature-icon fi-green">🛡️</div>
+          <div class="hero-feature-icon fi-green">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 1.5L2 3.75V7.5C2 10.537 4.462 13.3 7.5 14C10.538 13.3 13 10.537 13 7.5V3.75L7.5 1.5Z" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.65)" stroke-width="1.15" stroke-linejoin="round"/>
+              <path d="M5 7.75L6.75 9.5L10.25 6" stroke="rgba(255,255,255,0.65)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
           <span class="hero-feature-text"><strong>Optional password lock.</strong> Add a second layer — only the right person can unlock it.</span>
         </div>
       </div>
@@ -786,9 +809,18 @@
   </aside>
 
   <footer class="hero-footer">
-    <span>© 2026 DevPaste</span>
-    <span>·</span>
-    <span>Powered by <a href="https://devstudioal.com" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">DevStudioAl</a></span>
+    <div class="footer-row1">
+      <span>© 2026 DevPaste</span>
+      <span>·</span>
+      <span>Powered by <a href="https://devstudioal.com" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">DevStudioAl</a></span>
+    </div>
+    <div class="footer-row2">
+      <span><a href="https://github.com/DevStudioAl/devpaste" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Open Source</a></span>
+      <span>·</span>
+      <span><a href="/privacy" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Privacy</a></span>
+      <span>·</span>
+      <span><a href="/terms" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Terms</a></span>
+    </div>
   </footer>
 
   <script>
