@@ -58,6 +58,18 @@ Share passwords, API keys, tokens, or any sensitive data. Your content is encryp
 
 ## API
 
+**Pages**
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Landing page |
+| `GET` | `/new` | Create paste page |
+| `GET` | `/v/:id` | View / decrypt paste page |
+| `GET` | `/privacy` | Privacy Policy |
+| `GET` | `/terms` | Terms of Service |
+
+**API**
+
 | Method | Endpoint | Description |
 |---|---|---|
 | `POST` | `/api/paste` | Create a new encrypted paste |
@@ -108,7 +120,9 @@ devpaste/
     ├── home.html     # Landing page
     ├── new.html      # Create paste page
     ├── view.html     # View / decrypt paste page
-    ├── style.css     # Shared styles for the view page
+    ├── privacy.html  # Privacy Policy (GDPR-compliant, zero-knowledge focused)
+    ├── terms.html    # Terms of Service
+    ├── style.css     # Shared stylesheet (view, privacy, terms pages)
     └── hero-bg.jpg   # Background image
 ```
 
