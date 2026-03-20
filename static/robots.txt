@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /$
+Allow: /privacy
+Allow: /terms
+Disallow: /v/
+Disallow: /view/
+Disallow: /new
+Disallow: /api/
+
+Sitemap: https://paste.devstudioal.com/sitemap.xml

@@ -28,6 +28,14 @@ type attemptEntry struct {
         windowEnd time.Time
 }
 
+// withCache wraps a handler and adds a Cache-Control header.
+func withCache(h http.Handler, directive string) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+                w.Header().Set("Cache-Control", directive)
+                h.ServeHTTP(w, r)
+        })
+}
+
 func checkUnlockRate(ip, id string) bool {
         key := ip + "|" + id
         unlockLimiter.mu.Lock()
@@ -51,8 +59,13 @@ func recordUnlockSuccess(ip, id string) {
 }
 
 func main() {
+        dbPath := os.Getenv("DB_PATH")
+        if dbPath == "" {
+                dbPath = "./devpaste.db"
+        }
+
         var err error
-        db, err = sql.Open("sqlite", "./devpaste.db")
+        db, err = sql.Open("sqlite", dbPath)
         if err != nil {
                 log.Fatal("Failed to open database:", err)
         }
@@ -72,8 +85,13 @@ func main() {
         mux.HandleFunc("/view/", serveViewPage)
         mux.HandleFunc("/privacy", servePrivacyPage)
         mux.HandleFunc("/terms", serveTermsPage)
-        mux.Handle("/style.css", fs)
-        mux.Handle("/hero-bg.jpg", fs)
+        mux.Handle("/style.css", withCache(fs, "public, max-age=86400"))
+        mux.Handle("/home.css", withCache(fs, "public, max-age=86400"))
+        mux.Handle("/new.css", withCache(fs, "public, max-age=86400"))
+        mux.Handle("/hero-bg.jpg", withCache(fs, "public, max-age=31536000, immutable"))
+        mux.Handle("/favicon_new.png", withCache(fs, "public, max-age=31536000, immutable"))
+        mux.Handle("/robots.txt", withCache(fs, "public, max-age=3600"))
+        mux.Handle("/sitemap.xml", withCache(fs, "public, max-age=3600"))
         mux.HandleFunc("/api/paste", handlePaste)
         mux.HandleFunc("/api/paste/", handlePasteByID)
 
